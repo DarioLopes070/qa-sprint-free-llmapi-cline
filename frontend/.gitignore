@@ -1,0 +1,8 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+
+# Temporary backup
+backup-pre-update/
