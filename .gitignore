@@ -1,1 +1,38 @@
-node_modules
+# Byte‑compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+
+# Flask instance folder
+instance/
+
+# IDE folders
+.vscode/
+
+# OS specific
+.DS_Store
+
+# node modules folder
+node_modules/
+
+# Pytest cache
+.pytest_cache/
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment files
+.env
+.env.*
+
+# Preserve example env file
+!.env.example
+
+# Temporary test files
+cline_tool_test.txt
