@@ -54,12 +54,6 @@ export const ProjectTable = ({ projects, onEdit, onDelete }) => {
     textAlign: 'left',
   };
 
-  const actionsStyle = {
-    ...cellStyle,
-    display: 'flex',
-    gap: '0.5rem',
-  };
-
   return (
     <div
       className="card"
@@ -91,8 +85,8 @@ export const ProjectTable = ({ projects, onEdit, onDelete }) => {
             <th scope="col" style={headerStyle}>
               Data de criação
             </th>
-            <th scope="col" style={{ ...headerStyle, textAlign: 'right' }}>
-              Ações
+            <th scope="col" style={headerStyle}>
+              <div style={{ textAlign: 'center' }}>Ações</div>
             </th>
           </tr>
         </thead>
@@ -107,33 +101,37 @@ export const ProjectTable = ({ projects, onEdit, onDelete }) => {
               <td style={cellStyle}>
                 {formatDateBrazilian(project.created_at)}
               </td>
-              <td style={actionsStyle}>
-                <button
-                  type="button"
-                  onClick={() => onEdit(project)}
-                  aria-label={`Editar projeto ${project.name}`}
-                  className="btn btn-outline"
-                  style={{
-                    padding: '0.375rem 0.75rem',
-                    fontSize: '0.875rem',
-                  }}
-                >
-                  Editar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onDelete(project)}
-                  aria-label={`Excluir projeto ${project.name}`}
-                  className="btn btn-outline"
-                  style={{
-                    padding: '0.375rem 0.75rem',
-                    fontSize: '0.875rem',
-                    color: '#dc2626',
-                    borderColor: '#dc2626',
-                  }}
-                >
-                  Excluir
-                </button>
+              <td style={cellStyle}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <button
+                      type="button"
+                      onClick={() => onEdit(project)}
+                      aria-label={`Editar projeto ${project.name}`}
+                      className="btn btn-outline"
+                      style={{
+                        padding: '0.375rem 0.75rem',
+                        fontSize: '0.875rem',
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onDelete(project)}
+                      aria-label={`Excluir projeto ${project.name}`}
+                      className="btn btn-outline"
+                      style={{
+                        padding: '0.375rem 0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#dc2626',
+                        borderColor: '#dc2626',
+                      }}
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </div>
               </td>
             </tr>
           ))}

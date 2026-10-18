@@ -106,7 +106,7 @@ export const DeleteConfirmDialog = ({ project, onConfirm, onCancel, deleting, er
         </p>
 
         <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0 0 1rem 0' }}>
-          Test Cases e Bugs associados a este projeto também serão excluídos.
+          Casos de Teste e Bugs associados a este projeto também serão excluídos.
         </p>
 
         {error && (

@@ -4,9 +4,11 @@ import { PageHeader } from '../components/ui/PageHeader.jsx';
 import { StatCard } from '../components/ui/StatCard.jsx';
 import { EmptyState } from '../components/ui/EmptyState.jsx';
 import { listProjects } from '../services/projects.js';
+import { listTestCases } from '../services/testcases.js';
 
 export const Dashboard = () => {
   const [projectsCount, setProjectsCount] = useState(null);
+  const [testCasesCount, setTestCasesCount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -14,32 +16,58 @@ export const Dashboard = () => {
   useEffect(() => {
     let isMounted = true;
 
-    const loadProjectsCount = async () => {
+    const loadCounts = async () => {
       setLoading(true);
       setError(null);
       try {
-        const projects = await listProjects();
+        const [projectsResult, testCasesResult] = await Promise.allSettled([
+          listProjects(),
+          listTestCases(),
+        ]);
+        let firstError = null;
+
         if (isMounted) {
-          setProjectsCount(projects.length);
+          if (projectsResult.status === 'fulfilled') {
+            setProjectsCount(projectsResult.value.length);
+          } else {
+            setProjectsCount(null);
+            firstError = projectsResult.reason.message || 'Falha ao carregar projetos.';
+          }
+
+          if (testCasesResult.status === 'fulfilled') {
+            setTestCasesCount(testCasesResult.value.length);
+          } else {
+            setTestCasesCount(null);
+            if (!firstError) {
+              firstError = testCasesResult.reason.message || 'Falha ao carregar casos de teste.';
+            }
+          }
+
+          if (firstError) {
+            setError(firstError);
+          }
+
           setLoading(false);
         }
       } catch (err) {
         if (isMounted) {
-          setError(err.message || 'Falha ao carregar projetos.');
+          setError(err.message || 'Falha ao carregar métricas.');
           setLoading(false);
           setProjectsCount(null);
+          setTestCasesCount(null);
         }
       }
     };
 
-    loadProjectsCount();
+    loadCounts();
 
     return () => {
       isMounted = false;
     };
   }, [location.pathname]);
 
-  const statValue = loading ? '-' : projectsCount;
+  const projectsStatValue = loading ? '-' : projectsCount;
+  const testCasesStatValue = loading ? '-' : testCasesCount;
   const statStatus = loading
     ? 'pending'
     : error
@@ -56,8 +84,8 @@ export const Dashboard = () => {
       />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-        <StatCard label="Projetos" value={statValue} status={statStatus} />
-        <StatCard label="Casos de Teste" value="0" status="pending" />
+        <StatCard label="Projetos" value={projectsStatValue} status={statStatus} />
+        <StatCard label="Casos de Teste" value={testCasesStatValue} status={statStatus} />
         <StatCard label="Execuções" value="0" status="pending" />
         <StatCard label="Bugs" value="0" status="pending" />
       </div>
