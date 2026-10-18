@@ -88,7 +88,7 @@ img, svg {
   width: 100%;
   max-width: 1200px;
   margin-inline: auto;
-  padding: 0 1rem;
+  padding: 0;
 }
 
 /* Botão base */
@@ -170,7 +170,7 @@ img, svg {
 /* Mobile: menos de 768px */
 @media (max-width: 767px) {
   .container {
-    padding: 0 0.75rem;
+    padding: 0 1rem;
     max-width: 100%;
   }
 

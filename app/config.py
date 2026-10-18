@@ -5,7 +5,7 @@ class Config:
     SQLALCHEMY_ECHO = False
 
 class DevelopmentConfig(Config):
-    SQLALCHEMY_DATABASE_URI = "sqlite:///instance/db.sqlite"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///db.sqlite"
     SQLALCHEMY_MIGRATE_REPO = "migrations"
 
 class TestingConfig(Config):

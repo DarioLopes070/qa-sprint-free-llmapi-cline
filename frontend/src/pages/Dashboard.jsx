@@ -1,9 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { PageHeader } from '../components/ui/PageHeader.jsx';
 import { StatCard } from '../components/ui/StatCard.jsx';
 import { EmptyState } from '../components/ui/EmptyState.jsx';
+import { listProjects } from '../services/projects.js';
 
 export const Dashboard = () => {
+  const [projectsCount, setProjectsCount] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProjectsCount = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const projects = await listProjects();
+        if (isMounted) {
+          setProjectsCount(projects.length);
+          setLoading(false);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || 'Falha ao carregar projetos.');
+          setLoading(false);
+          setProjectsCount(null);
+        }
+      }
+    };
+
+    loadProjectsCount();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [location.pathname]);
+
+  const statValue = loading ? '-' : projectsCount;
+  const statStatus = loading
+    ? 'pending'
+    : error
+      ? 'error'
+      : projectsCount > 0
+        ? 'ok'
+        : 'warning';
+
   return (
     <div className="dashboard-page">
       <PageHeader
@@ -12,7 +56,7 @@ export const Dashboard = () => {
       />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-        <StatCard label="Projetos" value="0" status="pending" />
+        <StatCard label="Projetos" value={statValue} status={statStatus} />
         <StatCard label="Casos de Teste" value="0" status="pending" />
         <StatCard label="Execuções" value="0" status="pending" />
         <StatCard label="Bugs" value="0" status="pending" />

@@ -28,74 +28,95 @@ export const Header = ({ onMenuToggle, isSidebarOpen, isMobile }) => {
       style={{
         position: 'fixed',
         top: 0,
-        left: isSidebarOpen && !isMobile ? '260px' : '0',
-        right: 0,
+        left: isSidebarOpen && !isMobile ? 'calc(260px + 1rem)' : '1rem',
+        right: '1rem',
         height: '64px',
         background: '#ffffff',
         borderBottom: '1px solid #e5e7eb',
         display: 'flex',
         alignItems: 'center',
-        padding: '0 1.5rem',
         zIndex: 50,
       }}
     >
-      <button
-        type="button"
-        onClick={onMenuToggle}
-        aria-label="Abrir menu de navegação"
+      <div
         style={{
-          marginRight: '1rem',
-          padding: '0.5rem',
-          color: '#374151',
-          border: '1px solid #e5e7eb',
-          borderRadius: '0.375rem',
-          background: '#ffffff',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          width: '100%',
+          display: 'grid',
+          gridTemplateColumns: 'auto 1fr auto',
+          alignItems: 'center',
+          padding: '0 1rem',
+          gap: '1rem',
         }}
       >
-        ☰
-      </button>
+        <button
+          type="button"
+          onClick={onMenuToggle}
+          aria-label="Abrir menu de navegação"
+          style={{
+            padding: '0.5rem',
+            color: '#374151',
+            border: '1px solid #e5e7eb',
+            borderRadius: '0.375rem',
+            background: '#ffffff',
+            justifySelf: 'flex-start',
+          }}
+        >
+          ☰
+        </button>
 
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <h2
-          style={{
-            fontSize: '1.125rem',
-            fontWeight: 600,
-            color: '#111827',
-            marginBottom: '0.125rem',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {title}
-        </h2>
-        <p
-          style={{
-            fontSize: '0.75rem',
-            color: '#6b7280',
-            margin: 0,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {descriptions[location.pathname] || ''}
-        </p>
-      </div>
+        <div style={{ textAlign: 'center', minWidth: 0 }}>
+          <h2
+            style={{
+              fontSize: '1.125rem',
+              fontWeight: 600,
+              color: '#111827',
+              marginBottom: '0.125rem',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              textAlign: 'center',
+            }}
+          >
+            {title}
+          </h2>
+          <p
+            style={{
+              fontSize: '0.75rem',
+              color: '#6b7280',
+              margin: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              textAlign: 'center',
+            }}
+          >
+            {descriptions[location.pathname] || ''}
+          </p>
+        </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <span
+        <div
           style={{
-            fontSize: '0.75rem',
-            fontWeight: 500,
-            padding: '0.2rem 0.6rem',
-            background: '#eff6ff',
-            color: '#2563eb',
-            borderRadius: '9999px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+            justifySelf: 'flex-end',
           }}
         >
-          Modo Desenvolvimento
-        </span>
+          <span
+            style={{
+              fontSize: '0.75rem',
+              fontWeight: 500,
+              padding: '0.2rem 0.6rem',
+              background: '#eff6ff',
+              color: '#2563eb',
+              borderRadius: '9999px',
+            }}
+          >
+            Modo Desenvolvimento
+          </span>
+        </div>
       </div>
     </header>
   );
