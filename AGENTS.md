@@ -52,6 +52,7 @@ O objetivo é que o centro horizontal do texto "Ações" coincida com o centro h
 ### Aplicabilidade
 
 Este padrão deve ser reutilizado em todas as futuras tabelas com colunas de ação, incluindo:
+
 - Tabela de Execuções de Testes
 - Tabela de Bugs
 - Qualquer nova tabela com botões de ação
