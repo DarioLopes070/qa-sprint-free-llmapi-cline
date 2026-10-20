@@ -40,7 +40,6 @@ export const Header = ({ onMenuToggle, isSidebarOpen, isMobile }) => {
     >
       <div
         style={{
-          maxWidth: '1200px',
           width: '100%',
           display: 'grid',
           gridTemplateColumns: 'auto 1fr auto',

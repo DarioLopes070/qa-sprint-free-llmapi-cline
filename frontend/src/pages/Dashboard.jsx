@@ -7,6 +7,7 @@ import { LoadingState } from '../components/ui/LoadingState.jsx';
 import { listProjects } from '../services/projects.js';
 import { listTestCases } from '../services/testcases.js';
 import { listExecutions } from '../services/executions.js';
+import { listBugs } from '../services/bugs.js';
 
 const STATUS_LABELS = {
   Passed: 'Aprovado',
@@ -62,6 +63,8 @@ export const Dashboard = () => {
   const [testCasesList, setTestCasesList] = useState([]);
   const [executions, setExecutions] = useState([]);
   const [executionsLoaded, setExecutionsLoaded] = useState(false);
+  const [bugs, setBugs] = useState([]);
+  const [bugsLoaded, setBugsLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const location = useLocation();
@@ -70,11 +73,13 @@ export const Dashboard = () => {
     setLoading(true);
     setError(null);
     setExecutionsLoaded(false);
+    setBugsLoaded(false);
     try {
-      const [projectsResult, testCasesResult, executionsResult] = await Promise.allSettled([
+      const [projectsResult, testCasesResult, executionsResult, bugsResult] = await Promise.allSettled([
         listProjects(),
         listTestCases(),
         listExecutions(),
+        listBugs(),
       ]);
       let firstError = null;
 
@@ -108,6 +113,17 @@ export const Dashboard = () => {
         }
       }
 
+      if (bugsResult.status === 'fulfilled') {
+        setBugs(bugsResult.value);
+        setBugsLoaded(true);
+      } else {
+        setBugs([]);
+        setBugsLoaded(false);
+        if (!firstError) {
+          firstError = bugsResult.reason.message || 'Falha ao carregar bugs.';
+        }
+      }
+
       if (firstError) {
         setError(firstError);
       }
@@ -117,9 +133,11 @@ export const Dashboard = () => {
       setError(err.message || 'Falha ao carregar métricas.');
       setLoading(false);
       setExecutionsLoaded(false);
+      setBugsLoaded(false);
       setProjectsCount(null);
       setTestCasesCount(null);
       setExecutions([]);
+      setBugs([]);
     }
   }, []);
 
@@ -139,20 +157,48 @@ export const Dashboard = () => {
     .sort((a, b) => new Date(b.executed_at) - new Date(a.executed_at))
     .slice(0, 5);
 
+  const totalBugs = bugs.length;
+  const openBugs = bugs.filter((bug) => bug.status === 'Open').length;
+  const inProgressBugs = bugs.filter((bug) => bug.status === 'In Progress').length;
+  const resolvedBugs = bugs.filter((bug) => bug.status === 'Resolved').length;
+  const closedBugs = bugs.filter((bug) => bug.status === 'Closed').length;
+
+  const lowBugs = bugs.filter((bug) => bug.severity === 'Low').length;
+  const mediumBugs = bugs.filter((bug) => bug.severity === 'Medium').length;
+  const highBugs = bugs.filter((bug) => bug.severity === 'High').length;
+  const criticalBugs = bugs.filter((bug) => bug.severity === 'Critical').length;
+
   const projectsStatValue = loading ? '-' : projectsCount;
   const testCasesStatValue = loading ? '-' : testCasesCount;
   const executionsStatValue = executionsLoaded ? totalExecutions : '-';
   const passedStatValue = executionsLoaded ? passedExecutions : '-';
   const failedStatValue = executionsLoaded ? failedExecutions : '-';
   const blockedStatValue = executionsLoaded ? blockedExecutions : '-';
+  const bugsStatValue = bugsLoaded ? totalBugs : '-';
+  const openBugsValue = bugsLoaded ? openBugs : '-';
+  const inProgressBugsValue = bugsLoaded ? inProgressBugs : '-';
+  const resolvedBugsValue = bugsLoaded ? resolvedBugs : '-';
+  const closedBugsValue = bugsLoaded ? closedBugs : '-';
+  const lowBugsValue = bugsLoaded ? lowBugs : '-';
+  const mediumBugsValue = bugsLoaded ? mediumBugs : '-';
+  const highBugsValue = bugsLoaded ? highBugs : '-';
+  const criticalBugsValue = bugsLoaded ? criticalBugs : '-';
 
   const statStatus = loading
     ? 'pending'
     : error
       ? 'error'
-      : projectsCount > 0 || testCasesCount > 0 || totalExecutions > 0
+      : projectsCount > 0 || testCasesCount > 0 || totalExecutions > 0 || totalBugs > 0
         ? 'ok'
         : 'warning';
+
+  const bugCardsStatus = !bugsLoaded
+    ? error
+      ? 'error'
+      : 'pending'
+    : totalBugs > 0
+      ? 'ok'
+      : 'warning';
 
   return (
     <div className="dashboard-page">
@@ -168,7 +214,7 @@ export const Dashboard = () => {
         <StatCard label="Aprovadas" value={passedStatValue} status={statStatus} />
         <StatCard label="Reprovadas" value={failedStatValue} status={statStatus} />
         <StatCard label="Bloqueadas" value={blockedStatValue} status={statStatus} />
-        <StatCard label="Bugs" value="0" status="pending" />
+        <StatCard label="Bugs" value={bugsStatValue} status={bugCardsStatus} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
@@ -181,13 +227,47 @@ export const Dashboard = () => {
             boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
           }}
         >
-          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', marginBottom: '1rem' }}>
-            Indicadores de Qualidade
-          </h3>
-          <EmptyState
-            title="Aguardando integração com a API"
-            description="Os indicadores de qualidade serão exibidos aqui após a integração com os endpoints do backend."
-          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', margin: 0 }}>
+              Indicadores de Bugs
+            </h3>
+            <Link
+              to="/bugs"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.5rem 1rem',
+                background: '#2563eb',
+                color: '#ffffff',
+                borderRadius: '0.375rem',
+                fontWeight: 500,
+                fontSize: '0.875rem',
+                textDecoration: 'none',
+              }}
+            >
+              <span>→</span> Ver todos
+            </Link>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+              gap: '0.75rem',
+            }}
+          >
+            <StatCard label="Abertos" value={openBugsValue} status={bugCardsStatus} />
+            <StatCard label="Em Andamento" value={inProgressBugsValue} status={bugCardsStatus} />
+            <StatCard label="Resolvidos" value={resolvedBugsValue} status={bugCardsStatus} />
+            <StatCard label="Fechados" value={closedBugsValue} status={bugCardsStatus} />
+          </div>
         </section>
 
         <section
@@ -315,13 +395,30 @@ export const Dashboard = () => {
             boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
           }}
         >
-          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', marginBottom: '1rem' }}>
-            Bugs por Severidade
-          </h3>
-          <EmptyState
-            title="Sem dados de bugs"
-            description="A distribuição de bugs por severidade será exibida após a integração com a API de bugs."
-          />
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '1rem',
+            }}
+          >
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', margin: 0 }}>
+              Bugs por Severidade
+            </h3>
+          </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+              gap: '0.75rem',
+            }}
+          >
+            <StatCard label="Baixa" value={lowBugsValue} status={bugCardsStatus} />
+            <StatCard label="Média" value={mediumBugsValue} status={bugCardsStatus} />
+            <StatCard label="Alta" value={highBugsValue} status={bugCardsStatus} />
+            <StatCard label="Crítica" value={criticalBugsValue} status={bugCardsStatus} />
+          </div>
         </section>
 
         <section
