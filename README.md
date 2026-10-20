@@ -20,8 +20,7 @@ Fornecer um sistema leve para equipes de QA gerenciarem o ciclo de qualidade de 
 
 ## Estrutura principal de diretórios
 
-```
-qa-sprint-free-llmapi-cline/
+```qa-sprint-free-llmapi-cline/
 ├── app/                          # Backend Flask (fábrica create_app)
 │   ├── __init__.py               # Cria a aplicação e registra os blueprints
 │   ├── config.py                 # Configurações (Development / Testing)
@@ -66,13 +65,13 @@ python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-2. Instale as dependências Python:
+1. Instale as dependências Python:
 
 ```powershell
 pip install -r requirements.txt
 ```
 
-3. Defina as variáveis de ambiente necessárias (exemplo no PowerShell):
+1. Defina as variáveis de ambiente necessárias (exemplo no PowerShell):
 
 ```powershell
 $env:FLASK_APP = 'app'
@@ -81,7 +80,7 @@ $env:FLASK_ENV = 'development'
 
 > A aplicação utiliza a fábrica `create_app()` definida em `app/__init__.py`. Em desenvolvimento, o banco SQLite é criado automaticamente no diretório `instance/`.
 
-4. Inicie o servidor Flask:
+1. Inicie o servidor Flask:
 
 ```powershell
 flask run
@@ -97,13 +96,13 @@ O backend ficará disponível em `http://localhost:5000` (ou na porta informada 
 cd frontend
 ```
 
-2. Instale as dependências:
+1. Instale as dependências:
 
 ```powershell
 npm install
 ```
 
-3. Inicie o servidor de desenvolvimento (Vite):
+1. Inicie o servidor de desenvolvimento (Vite):
 
 ```powershell
 npm run dev
@@ -116,7 +115,7 @@ O frontend ficará disponível em `http://localhost:5173` (ou na porta informada
 ## Rotas da aplicação (frontend)
 
 | Rota | Página |
-|------|--------|
+| ------ | -------- |
 | `/` | Dashboard |
 | `/projects` | Projetos |
 | `/testcases` | Casos de Teste |
@@ -126,7 +125,7 @@ O frontend ficará disponível em `http://localhost:5173` (ou na porta informada
 ## Rotas da API (backend)
 
 | Recurso | Endpoints |
-|---------|-----------|
+| --------- | ----------- |
 | Projetos | `GET/POST /api/projects`, `GET/PUT/DELETE /api/projects/:id` |
 | Casos de Teste | `GET/POST /api/testcases`, `GET/PUT/DELETE /api/testcases/:id` (filtro opcional `?project_id=`) |
 | Execuções | `GET/POST /api/executions`, `GET/PUT/DELETE /api/executions/:id` (filtro opcional `?test_case_id=`) |
@@ -135,24 +134,29 @@ O frontend ficará disponível em `http://localhost:5173` (ou na porta informada
 ## Funcionalidades
 
 ### Projetos
+
 * Listar, criar, editar e excluir projetos.
 * Nome obrigatório (máximo 255 caracteres) e descrição opcional.
 
 ### Casos de Teste
+
 * Listar, criar, editar e excluir casos de teste vinculados a um projeto.
 * Campos: título, descrição, passos, resultado esperado e prioridade (Baixa/Média/Alta).
 * Filtro por projeto.
 
 ### Execuções de Teste
+
 * Registrar a execução de um caso de teste com status (Aprovado/Reprovado/Bloqueado/Não executado), responsável, resultado real e observações.
 
 ### Bugs
+
 * Listar, criar, editar e excluir bugs vinculados a projetos e (opcionalmente) a casos de teste.
 * Campos: título, descrição, severidade (Baixa/Média/Alta/Crítica) e status (Aberto/Em Andamento/Resolvido/Fechado).
 * Filtros por projeto, caso de teste, severidade e status.
 * Validações: projeto obrigatório, título obrigatório (máximo 255 caracteres), caso de teste deve pertencer ao projeto selecionado.
 
 ### Dashboard
+
 * Indicadores de projetos, casos de teste, execuções (aprovadas/reprovadas/bloqueadas) e bugs.
 * Indicadores de bugs: total, abertos, em andamento, resolvidos, fechados e distribuição por severidade (baixa/média/alta/crítica).
 * Carregamento com tratamento de erro parcial (uma falha na API não derruba os demais indicadores).
