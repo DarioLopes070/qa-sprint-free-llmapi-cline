@@ -169,9 +169,9 @@ export const TestCases = () => {
           style={{
             padding: '1.5rem',
             textAlign: 'center',
-            color: '#b91c1c',
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
+            color: 'var(--color-danger-text)',
+            backgroundColor: 'var(--color-danger-bg)',
+            border: '1px solid var(--color-danger-border)',
             borderRadius: '0.375rem',
             maxWidth: '400px',
             margin: '0 auto',
@@ -208,7 +208,7 @@ export const TestCases = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <label style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <label style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             Filtrar por projeto:
           </label>
           <select
@@ -231,7 +231,7 @@ export const TestCases = () => {
           </select>
         </div>
         {testCases.length > 0 && (
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <span style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             {testCases.length} caso{testCases.length !== 1 ? 's de teste' : ' de teste'}
           </span>
         )}

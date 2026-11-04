@@ -5,7 +5,7 @@ const STATUS_LABELS = {
   Passed: 'Aprovado',
   Failed: 'Reprovado',
   Blocked: 'Bloqueado',
-  'Not Run': 'Não executado',
+  'Not Run': 'Não executado (registro legado)',
 };
 
 const STATUS_BADGE_STYLE = (status) => {
@@ -19,15 +19,15 @@ const STATUS_BADGE_STYLE = (status) => {
 
   switch (status) {
     case 'Passed':
-      return { ...base, backgroundColor: '#ecfdf5', color: '#059669' };
+      return { ...base, backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' };
     case 'Failed':
-      return { ...base, backgroundColor: '#fef2f2', color: '#b91c1c' };
+      return { ...base, backgroundColor: 'var(--color-danger-border)', color: 'var(--color-danger-text)' };
     case 'Blocked':
-      return { ...base, backgroundColor: '#fefce8', color: '#854d0e' };
+      return { ...base, backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' };
     case 'Not Run':
-      return { ...base, backgroundColor: '#f3f4f6', color: '#6b7280' };
+      return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
     default:
-      return { ...base, backgroundColor: '#f3f4f6', color: '#6b7280' };
+      return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
   }
 };
 
@@ -63,17 +63,17 @@ export const TestExecutionTable = ({ executions, testCases, onEdit, onDelete }) 
 
   const cellStyle = {
     padding: '0.75rem',
-    borderBottom: '1px solid #e5e7eb',
+    borderBottom: '1px solid var(--color-border)',
     fontSize: '0.875rem',
-    color: '#1f2937',
+    color: 'var(--color-text)',
     verticalAlign: 'top',
   };
 
   const headerStyle = {
     ...cellStyle,
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'var(--color-surface-hover)',
     fontWeight: 600,
-    color: '#374151',
+    color: 'var(--color-text)',
     textAlign: 'left',
   };
 
@@ -100,7 +100,7 @@ export const TestExecutionTable = ({ executions, testCases, onEdit, onDelete }) 
         </thead>
         <tbody>
           {sorted.map((execution) => (
-            <tr key={execution.id} style={{ backgroundColor: '#ffffff' }}>
+            <tr key={execution.id} style={{ backgroundColor: 'var(--color-surface)' }}>
               <td style={cellStyle}>{execution.id}</td>
               <td style={cellStyle}>
                 {testCaseMap.get(execution.test_case_id) || `Caso #${execution.test_case_id}`}
@@ -131,8 +131,8 @@ export const TestExecutionTable = ({ executions, testCases, onEdit, onDelete }) 
                       className="btn btn-outline"
                       aria-label="Excluir execução"
                       style={{
-                        borderColor: '#b91c1c',
-                        color: '#b91c1c',
+                        borderColor: 'var(--color-danger)',
+                        color: 'var(--color-danger)',
                       }}
                     >
                       Excluir

@@ -1,27 +1,36 @@
-/* Variáveis de tema */
+/* Variáveis de tema (escuro) */
 :root {
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-primary-light: #eff6ff;
-  --color-text: #1f2937;
-  --color-text-secondary: #6b7280;
-  --color-background: #f9fafb;
-  --color-surface: #ffffff;
-  --color-border: #e5e7eb;
-  --color-border-hover: #d1d5db;
-  --color-danger: #dc2626;
-  --color-danger-light: #fef2f2;
-  --color-success: #059669;
-  --color-success-light: #ecfdf5;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-light: #1e3a8a;
+  --color-text: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-surface-hover: #334155;
+  --color-border: #334155;
+  --color-border-hover: #475569;
+  --color-danger: #ef4444;
+  --color-danger-bg: #450a0a;
+  --color-danger-border: #7f1d1d;
+  --color-danger-text: #fca5a5;
+  --color-success: #10b981;
+  --color-success-bg: #064e3b;
+  --color-success-border: #10b981;
+  --color-success-text: #34d399;
+  --color-warning: #f59e0b;
+  --color-warning-bg: #78350f;
+  --color-warning-text: #fbbf24;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --transition: all 0.2s ease;
   --sidebar-width: 260px;
   --header-height: 64px;
+  color-scheme: dark;
 }
 
 /* Reset e base */
@@ -64,6 +73,7 @@ button {
 input, select, textarea {
   font-family: inherit;
   font-size: inherit;
+  color: var(--color-text);
 }
 
 img, svg {
@@ -127,7 +137,7 @@ img, svg {
 
 .btn-outline:hover {
   border-color: var(--color-border-hover);
-  background-color: #f3f4f6;
+  background-color: var(--color-surface-hover);
 }
 
 .btn-danger {
@@ -136,7 +146,7 @@ img, svg {
 }
 
 .btn-danger:hover {
-  background-color: #b91c1c;
+  background-color: var(--color-danger-hover);
 }
 
 /* Input */
@@ -151,9 +161,24 @@ img, svg {
 }
 
 .input:focus {
-  outline: none;
   border-color: var(--color-primary);
-  ring-color: var(--color-primary-light);
+}
+
+.input:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Placeholder distinguível do valor preenchido */
+::placeholder {
+  color: var(--color-text-secondary);
+  opacity: 1;
+}
+
+/* Select com lista aberta: opções legíveis no tema escuro */
+select option {
+  background-color: var(--color-surface);
+  color: var(--color-text);
 }
 
 /* Cartão base */

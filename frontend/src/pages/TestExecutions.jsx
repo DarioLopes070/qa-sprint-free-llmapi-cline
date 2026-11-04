@@ -171,9 +171,9 @@ export const TestExecutions = () => {
           style={{
             padding: "1.5rem",
             textAlign: "center",
-            color: "#b91c1c",
-            backgroundColor: "#fef2f2",
-            border: "1px solid #fecaca",
+            color: "var(--color-danger-text)",
+            backgroundColor: "var(--color-danger-bg)",
+            border: "1px solid var(--color-danger-border)",
             borderRadius: "0.375rem",
             maxWidth: "400px",
             margin: "0 auto",
@@ -196,7 +196,7 @@ export const TestExecutions = () => {
       />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-        <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+        <span style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
           {filteredExecutions.length}{' '}
           {filteredExecutions.length === 1 ? 'execução' : 'execuções'}
         </span>
@@ -255,8 +255,8 @@ export const TestExecutions = () => {
           style={{
             padding: '1rem',
             textAlign: 'center',
-            color: '#6b7280',
-            backgroundColor: '#f3f4f6',
+            color: 'var(--color-text-secondary)',
+            backgroundColor: 'var(--color-surface-hover)',
             borderRadius: '0.375rem',
             marginBottom: '1rem',
             maxWidth: '400px',
@@ -350,9 +350,9 @@ export const TestExecutions = () => {
             position: 'fixed',
             top: '1rem',
             right: '1rem',
-            backgroundColor: '#ecfdf5',
-            border: '1px solid #bbf7d0',
-            color: '#065f46',
+            backgroundColor: 'var(--color-success-bg)',
+            border: '1px solid var(--color-success-border)',
+            color: 'var(--color-success-text)',
             padding: '0.75rem',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',

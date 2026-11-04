@@ -12,7 +12,7 @@ export const LoadingState = ({ message = 'Carregando...' }) => (
       alignItems: 'center',
       justifyContent: 'center',
       padding: '3rem 1rem',
-      color: '#6b7280',
+      color: 'var(--color-text-secondary)',
       gap: '0.75rem',
     }}
   >
@@ -22,8 +22,8 @@ export const LoadingState = ({ message = 'Carregando...' }) => (
       style={{
         width: '32px',
         height: '32px',
-        border: '3px solid #e5e7eb',
-        borderTopColor: '#2563eb',
+        border: '3px solid var(--color-border)',
+        borderTopColor: 'var(--color-primary)',
         borderRadius: '50%',
         animation: 'spin 0.8s linear infinite',
       }}

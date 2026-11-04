@@ -11,18 +11,18 @@ export const NotFound = () => {
         style={{
           maxWidth: '400px',
           margin: '0 auto',
-          background: '#ffffff',
-          border: '1px solid #e5e7eb',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
           borderRadius: '0.5rem',
           padding: '2rem',
           boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
         }}
       >
         <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔍</div>
-        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#111827', marginBottom: '0.5rem' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '0.5rem' }}>
           Página não encontrada
         </h2>
-        <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
+        <p style={{ color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
           O endereço acessado não existe. Verifique a URL ou retorne ao Dashboard.
         </p>
         <Link
@@ -32,7 +32,7 @@ export const NotFound = () => {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 1rem',
-            background: '#2563eb',
+            background: 'var(--color-primary)',
             color: '#ffffff',
             borderRadius: '0.375rem',
             fontWeight: 500,

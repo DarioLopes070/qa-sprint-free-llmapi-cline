@@ -168,7 +168,7 @@ export const BugForm = ({
         display: 'flex',
         flexDirection: 'column',
         gap: '1rem',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--color-surface)',
         borderRadius: '0.5rem',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
       }}
@@ -177,7 +177,7 @@ export const BugForm = ({
         style={{
           fontSize: '1.25rem',
           fontWeight: 600,
-          color: '#1f2937',
+          color: 'var(--color-text)',
           margin: 0,
         }}
       >
@@ -189,9 +189,9 @@ export const BugForm = ({
           role="alert"
           aria-live="assertive"
           style={{
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#b91c1c',
+            backgroundColor: 'var(--color-danger-bg)',
+            border: '1px solid var(--color-danger-border)',
+            color: 'var(--color-danger-text)',
             padding: '0.75rem',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
@@ -207,7 +207,7 @@ export const BugForm = ({
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Projeto
@@ -221,10 +221,10 @@ export const BugForm = ({
           className="input"
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
-            backgroundColor: !isCreating ? '#f3f4f6' : '#ffffff',
+            backgroundColor: !isCreating ? 'var(--color-surface-hover)' : 'var(--color-surface)',
             cursor: !isCreating ? 'not-allowed' : 'pointer',
             width: '100%',
             overflow: 'hidden',
@@ -240,7 +240,7 @@ export const BugForm = ({
           ))}
         </select>
         {fieldErrors.project_id && (
-          <span style={{ fontSize: '0.75rem', color: '#b91c1c' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>
             {fieldErrors.project_id}
           </span>
         )}
@@ -252,7 +252,7 @@ export const BugForm = ({
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Caso de Teste
@@ -266,10 +266,10 @@ export const BugForm = ({
           className="input"
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
-            backgroundColor: !formData.project_id ? '#f3f4f6' : '#ffffff',
+            backgroundColor: !formData.project_id ? 'var(--color-surface-hover)' : 'var(--color-surface)',
             cursor: !formData.project_id ? 'not-allowed' : 'pointer',
             width: '100%',
             overflow: 'hidden',
@@ -285,13 +285,13 @@ export const BugForm = ({
           ))}
         </select>
         {fieldErrors.test_case_id && (
-          <span style={{ fontSize: '0.75rem', color: '#b91c1c' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>
             {fieldErrors.test_case_id}
           </span>
         )}
         <div style={{ minHeight: '1.25rem' }}>
           {!formData.project_id && (
-            <span style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
               Selecione um projeto primeiro para ver os casos de teste disponíveis.
             </span>
           )}
@@ -304,7 +304,7 @@ export const BugForm = ({
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Título
@@ -321,13 +321,13 @@ export const BugForm = ({
           className="input"
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
           }}
         />
         {fieldErrors.title && (
-          <span style={{ fontSize: '0.75rem', color: '#b91c1c' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>
             {fieldErrors.title}
           </span>
         )}
@@ -339,7 +339,7 @@ export const BugForm = ({
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Descrição
@@ -355,14 +355,14 @@ export const BugForm = ({
           className="input"
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
             resize: 'vertical',
           }}
         />
         {fieldErrors.description && (
-          <span style={{ fontSize: '0.75rem', color: '#b91c1c' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>
             {fieldErrors.description}
           </span>
         )}
@@ -374,7 +374,7 @@ export const BugForm = ({
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Severidade
@@ -388,7 +388,7 @@ export const BugForm = ({
           className="input"
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
           }}
@@ -400,7 +400,7 @@ export const BugForm = ({
           ))}
         </select>
         {fieldErrors.severity && (
-          <span style={{ fontSize: '0.75rem', color: '#b91c1c' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>
             {fieldErrors.severity}
           </span>
         )}
@@ -412,7 +412,7 @@ export const BugForm = ({
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Status
@@ -426,7 +426,7 @@ export const BugForm = ({
           className="input"
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #d1d5db',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
           }}
@@ -438,7 +438,7 @@ export const BugForm = ({
           ))}
         </select>
         {fieldErrors.status && (
-          <span style={{ fontSize: '0.75rem', color: '#b91c1c' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--color-danger)' }}>
             {fieldErrors.status}
           </span>
         )}
@@ -450,8 +450,8 @@ export const BugForm = ({
             <span
               style={{
                 fontSize: '0.75rem',
-                color: '#6b7280',
-                backgroundColor: '#f3f4f6',
+                color: 'var(--color-text-secondary)',
+                backgroundColor: 'var(--color-surface-hover)',
                 padding: '0.5rem 0.75rem',
                 borderRadius: '0.375rem',
               }}

@@ -5,7 +5,7 @@ from app.models import TestExecution, TestCase
 
 bp = Blueprint('test_executions', __name__, url_prefix='/api/executions')
 
-VALID_STATUSES = ['Passed', 'Failed', 'Blocked', 'Not Run']
+VALID_STATUSES = ['Passed', 'Failed', 'Blocked']
 ALLOWED_CREATE_FIELDS = {
     'test_case_id', 'status', 'executed_by', 'actual_result', 'notes',
 }
@@ -32,11 +32,14 @@ def _error_response(message, status_code):
 
 @bp.route('/', methods=['GET'])
 def list_executions():
-    """Listar execucoes, com filtro opcional por test_case_id."""
+    """Listar execucoes, com filtros opcionais por test_case_id e project_id."""
     test_case_id = request.args.get('test_case_id', type=int)
-    query = TestExecution.query
+    project_id = request.args.get('project_id', type=int)
+    query = TestExecution.query.join(TestCase, TestExecution.test_case_id == TestCase.id)
     if test_case_id is not None:
-        query = query.filter_by(test_case_id=test_case_id)
+        query = query.filter(TestExecution.test_case_id == test_case_id)
+    if project_id is not None:
+        query = query.filter(TestCase.project_id == project_id)
     return jsonify([_serialize_execution(e) for e in query.all()]), 200
 
 

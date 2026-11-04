@@ -20,8 +20,9 @@ def serialize_datetime(dt):
         dt = dt.astimezone(timezone.utc)
     return dt.isoformat()
 from .blueprints.projects import bp as projects_bp
-from .blueprints.testcases import bp as testcases_bp
+from .blueprints.test import bp as test_bp
 from .blueprints.test_executions import bp as test_executions_bp
+from .blueprints.testcases import bp as testcases_bp
 from .blueprints.bugs import bp as bugs_bp
 
 
@@ -46,6 +47,7 @@ def create_app(config_name="Development"):
     app.register_blueprint(projects_bp)
     app.register_blueprint(testcases_bp)
     app.register_blueprint(test_executions_bp)
+    app.register_blueprint(test_bp)
     app.register_blueprint(bugs_bp)
 
     @app.errorhandler(404)

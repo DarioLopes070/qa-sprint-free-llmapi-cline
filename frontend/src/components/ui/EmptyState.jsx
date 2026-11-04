@@ -18,11 +18,11 @@ export const EmptyState = ({
       justifyContent: 'center',
       padding: '3rem 1rem',
       textAlign: 'center',
-      color: '#6b7280',
+      color: 'var(--color-text-secondary)',
     }}
   >
     <div style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.5 }}>{icon}</div>
-    <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#1f2937', marginBottom: '0.5rem' }}>
+    <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '0.5rem' }}>
       {title}
     </h3>
     {description && (
@@ -38,9 +38,9 @@ export const EmptyState = ({
           padding: '0.5rem 1rem',
           fontSize: '0.875rem',
           fontWeight: 500,
-          color: '#2563eb',
+          color: 'var(--color-primary)',
           background: 'transparent',
-          border: '1px solid #2563eb',
+          border: '1px solid var(--color-primary)',
           borderRadius: '0.375rem',
           cursor: 'pointer',
         }}

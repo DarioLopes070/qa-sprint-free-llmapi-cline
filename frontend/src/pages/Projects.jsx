@@ -152,9 +152,9 @@ export const Projects = () => {
           style={{
             padding: '1.5rem',
             textAlign: 'center',
-            color: '#b91c1c',
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
+            color: 'var(--color-danger-text)',
+            backgroundColor: 'var(--color-danger-bg)',
+            border: '1px solid var(--color-danger-border)',
             borderRadius: '0.375rem',
             maxWidth: '400px',
             margin: '0 auto',
@@ -191,7 +191,7 @@ export const Projects = () => {
         }}
       >
         {projects.length > 0 && (
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <span style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             {projects.length} projeto{projects.length !== 1 ? 's' : ''}
           </span>
         )}

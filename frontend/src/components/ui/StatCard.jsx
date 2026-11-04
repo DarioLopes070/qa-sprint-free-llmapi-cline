@@ -7,18 +7,18 @@ export const StatCard = ({ label, value, status }) => (
     aria-label={label}
     className="stat-card"
     style={{
-      background: '#ffffff',
-      border: '1px solid #e5e7eb',
+      background: 'var(--color-surface)',
+      border: '1px solid var(--color-border)',
       borderRadius: '0.5rem',
       padding: '1.25rem',
-      boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+      boxShadow: 'var(--shadow)',
       display: 'flex',
       flexDirection: 'column',
       gap: '0.5rem',
     }}
   >
-    <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>{label}</p>
-    <div style={{ fontSize: '1.875rem', fontWeight: 700, color: '#111827', margin: 0 }}>
+    <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: 0 }}>{label}</p>
+    <div style={{ fontSize: '1.875rem', fontWeight: 700, color: 'var(--color-text)', margin: 0 }}>
       {value}
     </div>
     {status && (
@@ -31,23 +31,23 @@ export const StatCard = ({ label, value, status }) => (
           alignSelf: 'flex-start',
           backgroundColor:
             status === 'ok'
-              ? '#ecfdf5'
+              ? 'var(--color-success-bg)'
               : status === 'warning'
-                ? '#fefce8'
+                ? 'var(--color-warning-bg)'
                 : status === 'error'
-                  ? '#fef2f2'
-                  : '#f3f4f6',
+                  ? 'var(--color-danger-bg)'
+                  : 'var(--color-surface-hover)',
           color:
             status === 'ok'
-              ? '#059669'
+              ? 'var(--color-success-text)'
               : status === 'warning'
-                ? '#854d0e'
+                ? 'var(--color-warning-text)'
                 : status === 'error'
-                  ? '#b91c1c'
-                  : '#6b7280',
+                  ? 'var(--color-danger-text)'
+                  : 'var(--color-text-secondary)',
         }}
       >
-        {status === 'ok' ? 'Operacional' : status === 'warning' ? 'Atenção' : status === 'error' ? 'Erro' : 'Pendente'}
+        {status === 'ok' ? 'Operacional' : status === 'warning' ? 'Atenção' : status === 'error' ? 'Indisponível' : 'Carregando'}
       </span>
     )}
   </div>

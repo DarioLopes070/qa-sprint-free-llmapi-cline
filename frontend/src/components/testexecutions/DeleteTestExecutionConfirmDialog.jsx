@@ -96,7 +96,7 @@ export const DeleteTestExecutionConfirmDialog = ({
           style={{
             fontSize: '1.125rem',
             fontWeight: 700,
-            color: '#111827',
+            color: 'var(--color-text)',
             margin: '0 0 0.5rem 0',
           }}
         >
@@ -107,21 +107,21 @@ export const DeleteTestExecutionConfirmDialog = ({
           id="delete-execution-dialog-description"
           style={{
             fontSize: '0.875rem',
-            color: '#374151',
+            color: 'var(--color-text-secondary)',
             margin: '0 0 1rem 0',
           }}
         >
           Tem certeza de que deseja excluir a execução <strong>#{execution.id}</strong>?
         </p>
 
-        <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0 0 0.5rem 0' }}>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: '0 0 0.5rem 0' }}>
           Caso de Teste: {execution.testCaseTitle || `Caso #${execution.test_case_id}`}
         </p>
-        <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0 0 1rem 0' }}>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: '0 0 1rem 0' }}>
           Status: {STATUS_LABELS[execution.status] || execution.status}
         </p>
 
-        <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0 0 1rem 0' }}>
+        <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', margin: '0 0 1rem 0' }}>
           Esta ação é permanente e não pode ser desfeita.
         </p>
 
@@ -130,9 +130,9 @@ export const DeleteTestExecutionConfirmDialog = ({
             role="alert"
             aria-live="assertive"
             style={{
-              backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              color: '#b91c1c',
+              backgroundColor: 'var(--color-danger-bg)',
+              border: '1px solid var(--color-danger-border)',
+              color: 'var(--color-danger-text)',
               padding: '0.75rem',
               borderRadius: '0.375rem',
               fontSize: '0.875rem',

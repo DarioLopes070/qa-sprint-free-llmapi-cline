@@ -38,6 +38,55 @@ export const TestCaseTable = ({ testCases, onEdit, onDelete }) => {
     }
   };
 
+  const RESULT_LABELS = {
+    Passed: 'Aprovado',
+    Failed: 'Reprovado',
+    Blocked: 'Bloqueado',
+  };
+
+  const renderLastResult = (lastExecution) => {
+    if (!lastExecution) {
+      return (
+        <span
+          style={{
+            display: 'inline-block',
+            padding: '0.125rem 0.5rem',
+            borderRadius: '9999px',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            backgroundColor: 'var(--color-surface-hover)',
+            color: 'var(--color-text-secondary)',
+            border: '1px solid var(--color-border)',
+          }}
+        >
+          Não executado
+        </span>
+      );
+    }
+    const label = RESULT_LABELS[lastExecution.status] || lastExecution.status;
+    const style =
+      lastExecution.status === 'Passed'
+        ? { backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' }
+        : lastExecution.status === 'Failed'
+          ? { backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-danger-text)' }
+          : { backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' };
+    return (
+      <span
+        style={{
+          display: 'inline-block',
+          padding: '0.125rem 0.5rem',
+          borderRadius: '9999px',
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          border: '1px solid',
+          ...style,
+        }}
+      >
+        {label}
+      </span>
+    );
+  };
+
   const priorityBadgeStyle = (priority) => {
     const base = {
       display: 'inline-block',
@@ -48,29 +97,29 @@ export const TestCaseTable = ({ testCases, onEdit, onDelete }) => {
     };
     switch (priority) {
       case 'Low':
-        return { ...base, backgroundColor: '#ecfdf5', color: '#059669' };
+        return { ...base, backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' };
       case 'Medium':
-        return { ...base, backgroundColor: '#fefce8', color: '#854d0e' };
+        return { ...base, backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' };
       case 'High':
-        return { ...base, backgroundColor: '#fef2f2', color: '#b91c1c' };
+        return { ...base, backgroundColor: 'var(--color-danger-border)', color: 'var(--color-danger-text)' };
       default:
-        return { ...base, backgroundColor: '#f3f4f6', color: '#6b7280' };
+        return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
     }
   };
 
   const cellStyle = {
     padding: '0.75rem',
-    borderBottom: '1px solid #e5e7eb',
+    borderBottom: '1px solid var(--color-border)',
     fontSize: '0.875rem',
-    color: '#1f2937',
+    color: 'var(--color-text)',
     verticalAlign: 'top',
   };
 
   const headerStyle = {
     ...cellStyle,
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'var(--color-surface-hover)',
     fontWeight: 600,
-    color: '#374151',
+    color: 'var(--color-text)',
     textAlign: 'left',
   };
 
@@ -109,13 +158,16 @@ export const TestCaseTable = ({ testCases, onEdit, onDelete }) => {
               Data de criação
             </th>
             <th scope="col" style={headerStyle}>
+              <div style={{ textAlign: 'center' }}>Último resultado</div>
+            </th>
+            <th scope="col" style={headerStyle}>
               <div style={{ textAlign: 'center' }}>Ações</div>
             </th>
           </tr>
         </thead>
         <tbody>
           {testCases.map((tc) => (
-            <tr key={tc.id} style={{ backgroundColor: '#ffffff' }}>
+            <tr key={tc.id} style={{ backgroundColor: 'var(--color-surface)' }}>
               <td style={cellStyle}>{tc.id}</td>
               <td style={cellStyle}>{tc.title}</td>
               <td style={cellStyle}>{tc.project_id}</td>
@@ -124,6 +176,11 @@ export const TestCaseTable = ({ testCases, onEdit, onDelete }) => {
               </td>
               <td style={cellStyle}>
                 {formatDateBrazilian(tc.created_at)}
+              </td>
+              <td style={cellStyle}>
+                <div style={{ textAlign: 'center' }}>
+                  {renderLastResult(tc.last_execution)}
+                </div>
               </td>
               <td style={cellStyle}>
                 <div style={{ textAlign: 'center' }}>
@@ -148,8 +205,8 @@ export const TestCaseTable = ({ testCases, onEdit, onDelete }) => {
                       style={{
                         padding: '0.375rem 0.75rem',
                         fontSize: '0.875rem',
-                        color: '#dc2626',
-                        borderColor: '#dc2626',
+                        color: 'var(--color-danger)',
+                        borderColor: 'var(--color-danger)',
                       }}
                     >
                       Excluir
@@ -173,6 +230,11 @@ TestCaseTable.propTypes = {
       title: PropTypes.string.isRequired,
       priority: PropTypes.string,
       created_at: PropTypes.string,
+      last_execution: PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        status: PropTypes.string.isRequired,
+        executed_at: PropTypes.string,
+      }),
     })
   ).isRequired,
   onEdit: PropTypes.func.isRequired,

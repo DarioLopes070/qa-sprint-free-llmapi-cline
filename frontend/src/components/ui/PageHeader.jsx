@@ -10,7 +10,7 @@ export const PageHeader = ({ title, description }) => (
       style={{
         fontSize: '1.5rem',
         fontWeight: 700,
-        color: '#111827',
+        color: 'var(--color-text)',
         marginBottom: description ? '0.25rem' : 0,
         textAlign: 'center',
       }}
@@ -21,7 +21,7 @@ export const PageHeader = ({ title, description }) => (
       <p
         style={{
           fontSize: '0.875rem',
-          color: '#6b7280',
+          color: 'var(--color-text-secondary)',
           margin: 0,
           textAlign: 'center',
         }}

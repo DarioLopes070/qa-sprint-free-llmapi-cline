@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { PageHeader } from '../components/ui/PageHeader.jsx';
 import { StatCard } from '../components/ui/StatCard.jsx';
@@ -27,15 +27,15 @@ const STATUS_BADGE_STYLE = (status) => {
 
   switch (status) {
     case 'Passed':
-      return { ...base, backgroundColor: '#ecfdf5', color: '#059669' };
+      return { ...base, backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' };
     case 'Failed':
-      return { ...base, backgroundColor: '#fef2f2', color: '#b91c1c' };
+      return { ...base, backgroundColor: 'var(--color-danger-border)', color: 'var(--color-danger-text)' };
     case 'Blocked':
-      return { ...base, backgroundColor: '#fefce8', color: '#854d0e' };
+      return { ...base, backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' };
     case 'Not Run':
-      return { ...base, backgroundColor: '#f3f4f6', color: '#6b7280' };
+      return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
     default:
-      return { ...base, backgroundColor: '#f3f4f6', color: '#6b7280' };
+      return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
   }
 };
 
@@ -67,9 +67,13 @@ export const Dashboard = () => {
   const [bugsLoaded, setBugsLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [projectsList, setProjectsList] = useState([]);
   const location = useLocation();
+  const requestIdRef = useRef(0);
 
-  const loadCounts = useCallback(async () => {
+  const loadCounts = useCallback(async (projectId) => {
+    const requestId = ++requestIdRef.current;
     setLoading(true);
     setError(null);
     setExecutionsLoaded(false);
@@ -77,16 +81,22 @@ export const Dashboard = () => {
     try {
       const [projectsResult, testCasesResult, executionsResult, bugsResult] = await Promise.allSettled([
         listProjects(),
-        listTestCases(),
-        listExecutions(),
-        listBugs(),
+        listTestCases(projectId),
+        listExecutions({ projectId }),
+        listBugs({ project_id: projectId }),
       ]);
+      // Ignora respostas atrasadas de seleções antigas: apenas a seleção atual pode atualizar a tela.
+      if (requestIdRef.current !== requestId) {
+        return;
+      }
       let firstError = null;
 
       if (projectsResult.status === 'fulfilled') {
         setProjectsCount(projectsResult.value.length);
+        setProjectsList(projectsResult.value);
       } else {
         setProjectsCount(null);
+        setProjectsList([]);
         firstError = projectsResult.reason.message || 'Falha ao carregar projetos.';
       }
 
@@ -130,25 +140,30 @@ export const Dashboard = () => {
 
       setLoading(false);
     } catch (err) {
+      // Ignora falhas de seleções antigas: apenas a seleção atual pode atualizar a tela.
+      if (requestIdRef.current !== requestId) {
+        return;
+      }
       setError(err.message || 'Falha ao carregar métricas.');
       setLoading(false);
       setExecutionsLoaded(false);
       setBugsLoaded(false);
       setProjectsCount(null);
       setTestCasesCount(null);
+      setProjectsList([]);
       setExecutions([]);
       setBugs([]);
     }
   }, []);
 
   useEffect(() => {
-    loadCounts();
-  }, [location.pathname, loadCounts]);
+    loadCounts(selectedProjectId);
+  }, [location.pathname, selectedProjectId, loadCounts]);
 
-  const totalExecutions = executions.length;
   const passedExecutions = executions.filter((e) => e.status === 'Passed').length;
   const failedExecutions = executions.filter((e) => e.status === 'Failed').length;
   const blockedExecutions = executions.filter((e) => e.status === 'Blocked').length;
+  const totalExecutions = passedExecutions + failedExecutions + blockedExecutions;
 
   const testCaseMap = new Map();
   testCasesList.forEach((tc) => testCaseMap.set(tc.id, tc.title));
@@ -168,8 +183,8 @@ export const Dashboard = () => {
   const highBugs = bugs.filter((bug) => bug.severity === 'High').length;
   const criticalBugs = bugs.filter((bug) => bug.severity === 'Critical').length;
 
-  const projectsStatValue = loading ? '-' : projectsCount;
-  const testCasesStatValue = loading ? '-' : testCasesCount;
+  const projectsStatValue = loading || error ? '-' : (selectedProjectId !== null ? 1 : projectsCount);
+  const testCasesStatValue = loading || error ? '-' : testCasesCount;
   const executionsStatValue = executionsLoaded ? totalExecutions : '-';
   const passedStatValue = executionsLoaded ? passedExecutions : '-';
   const failedStatValue = executionsLoaded ? failedExecutions : '-';
@@ -188,17 +203,13 @@ export const Dashboard = () => {
     ? 'pending'
     : error
       ? 'error'
-      : projectsCount > 0 || testCasesCount > 0 || totalExecutions > 0 || totalBugs > 0
-        ? 'ok'
-        : 'warning';
+      : 'ok';
 
   const bugCardsStatus = !bugsLoaded
     ? error
       ? 'error'
       : 'pending'
-    : totalBugs > 0
-      ? 'ok'
-      : 'warning';
+    : 'ok';
 
   return (
     <div className="dashboard-page">
@@ -206,25 +217,70 @@ export const Dashboard = () => {
         title="Dashboard"
         description="Visão geral das atividades de qualidade e métricas do sistema."
       />
+      <>
+
+      {projectsList.length > 0 && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '2rem',
+            flexWrap: 'wrap',
+            gap: '1rem',
+          }}
+        >
+          <label
+            style={{
+              fontSize: '0.875rem',
+              color: 'var(--color-text-secondary)',
+              fontWeight: 600,
+            }}
+          >
+            Projeto:
+          </label>
+          <select
+            value={selectedProjectId === null ? '' : String(selectedProjectId)}
+            onChange={(event) => {
+              const val = event.target.value;
+              setSelectedProjectId(val === '' ? null : Number(val));
+            }}
+            className="input"
+            style={{
+              fontSize: '0.875rem',
+              padding: '0.375rem 0.75rem',
+              minWidth: '250px',
+            }}
+          >
+            <option value="">Todos os projetos</option>
+            {projectsList.map((project) => (
+              <option key={project.id} value={project.id}>
+                {project.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-        <StatCard label="Projetos" value={projectsStatValue} status={statStatus} />
-        <StatCard label="Casos de Teste" value={testCasesStatValue} status={statStatus} />
-        <StatCard label="Execuções" value={executionsStatValue} status={statStatus} />
-        <StatCard label="Aprovadas" value={passedStatValue} status={statStatus} />
-        <StatCard label="Reprovadas" value={failedStatValue} status={statStatus} />
-        <StatCard label="Bloqueadas" value={blockedStatValue} status={statStatus} />
-        <StatCard label="Bugs" value={bugsStatValue} status={bugCardsStatus} />
-      </div>
+          <StatCard label="Projetos" value={projectsStatValue} status={statStatus} />
+          <StatCard label="Casos de Teste" value={testCasesStatValue} status={statStatus} />
+          <StatCard label="Execuções com resultado" value={executionsStatValue} status={statStatus} />
+          <StatCard label="Aprovadas" value={passedStatValue} status={statStatus} />
+          <StatCard label="Reprovadas" value={failedStatValue} status={statStatus} />
+          <StatCard label="Bloqueadas" value={blockedStatValue} status={statStatus} />
+          <StatCard label="Bugs" value={bugsStatValue} status={bugCardsStatus} />
+        </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
         <section
           style={{
-            background: '#ffffff',
-            border: '1px solid #e5e7eb',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.5rem',
             padding: '1.5rem',
-            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
           <div
@@ -235,7 +291,7 @@ export const Dashboard = () => {
               marginBottom: '1rem',
             }}
           >
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', margin: 0 }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
               Indicadores de Bugs
             </h3>
             <Link
@@ -245,7 +301,7 @@ export const Dashboard = () => {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.5rem 1rem',
-                background: '#2563eb',
+                background: 'var(--color-primary)',
                 color: '#ffffff',
                 borderRadius: '0.375rem',
                 fontWeight: 500,
@@ -272,15 +328,15 @@ export const Dashboard = () => {
 
         <section
           style={{
-            background: '#ffffff',
-            border: '1px solid #e5e7eb',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.5rem',
             padding: '1.5rem',
-            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', margin: 0 }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
               Últimas Execuções
             </h3>
             <Link
@@ -290,7 +346,7 @@ export const Dashboard = () => {
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.5rem 1rem',
-                background: '#2563eb',
+                background: 'var(--color-primary)',
                 color: '#ffffff',
                 borderRadius: '0.375rem',
                 fontWeight: 500,
@@ -308,9 +364,9 @@ export const Dashboard = () => {
             <div
               style={{
                 padding: '1rem',
-                backgroundColor: '#fef2f2',
-                border: '1px solid #fecaca',
-                color: '#b91c1c',
+                backgroundColor: 'var(--color-danger-bg)',
+                border: '1px solid var(--color-danger-border)',
+                color: 'var(--color-danger-text)',
                 borderRadius: '0.375rem',
                 fontSize: '0.875rem',
                 textAlign: 'center',
@@ -334,10 +390,10 @@ export const Dashboard = () => {
                 Tentar novamente
               </button>
             </div>
-          ) : executions.length === 0 ? (
+          ) : error ? null : executions.length === 0 ? (
             <EmptyState
-              title="Nenhuma execução cadastrada"
-              description="Ainda não existem execuções de teste no sistema."
+              title={selectedProjectId !== null ? 'Nenhuma execução cadastrada neste projeto.' : 'Nenhuma execução cadastrada no sistema.'}
+              description="Ainda não existem execuções de teste cadastradas."
               icon="📭"
             />
           ) : (
@@ -359,12 +415,12 @@ export const Dashboard = () => {
                     flexDirection: 'column',
                     gap: '0.25rem',
                     padding: '0.75rem',
-                    borderBottom: '1px solid #f3f4f6',
+                    borderBottom: '1px solid var(--color-border)',
                     fontSize: '0.875rem',
-                    color: '#374151',
+                    color: 'var(--color-text-secondary)',
                   }}
                 >
-                  <div style={{ fontWeight: 600, color: '#111827' }}>Execução #{execution.id}</div>
+                  <div style={{ fontWeight: 600, color: 'var(--color-text)' }}>Execução #{execution.id}</div>
                   <div>
                     Caso de Teste:{' '}
                     {testCaseMap.get(execution.test_case_id) || `Caso #${execution.test_case_id}`}
@@ -388,11 +444,11 @@ export const Dashboard = () => {
 
         <section
           style={{
-            background: '#ffffff',
-            border: '1px solid #e5e7eb',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.5rem',
             padding: '1.5rem',
-            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
           <div
@@ -403,7 +459,7 @@ export const Dashboard = () => {
               marginBottom: '1rem',
             }}
           >
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', margin: 0 }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)', margin: 0 }}>
               Bugs por Severidade
             </h3>
           </div>
@@ -423,14 +479,14 @@ export const Dashboard = () => {
 
         <section
           style={{
-            background: '#ffffff',
-            border: '1px solid #e5e7eb',
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.5rem',
             padding: '1.5rem',
-            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1)',
+            boxShadow: 'var(--shadow-sm)',
           }}
         >
-          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#111827', marginBottom: '1rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--color-text)', marginBottom: '1rem' }}>
             Atividades Recentes
           </h3>
           <EmptyState
@@ -444,8 +500,8 @@ export const Dashboard = () => {
         style={{
           marginTop: '2rem',
           padding: '1.5rem',
-          background: '#eff6ff',
-          border: '1px solid #bfdbfe',
+          background: 'var(--color-primary-light)',
+          border: '1px solid var(--color-primary)',
           borderRadius: '0.5rem',
           display: 'flex',
           alignItems: 'center',
@@ -454,14 +510,15 @@ export const Dashboard = () => {
       >
         <span style={{ fontSize: '1.5rem' }}>ℹ️</span>
         <div>
-          <p style={{ fontSize: '0.875rem', color: '#1e40af', fontWeight: 500, margin: 0 }}>
+          <p style={{ fontSize: '0.875rem', color: 'var(--color-primary)', fontWeight: 500, margin: 0 }}>
             Em desenvolvimento
           </p>
-          <p style={{ fontSize: '0.75rem', color: '#1e40af', margin: '0.25rem 0 0 0' }}>
+          <p style={{ fontSize: '0.75rem', color: 'var(--color-primary)', margin: '0.25rem 0 0 0' }}>
             Use o menu lateral para navegar entre Projetos, Casos de Teste, Execuções e Bugs.
           </p>
         </div>
       </div>
+    </>
     </div>
   );
 };

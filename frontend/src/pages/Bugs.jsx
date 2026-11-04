@@ -262,7 +262,7 @@ export const Bugs = () => {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <label style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <label style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             Projeto:
           </label>
           <select
@@ -283,7 +283,7 @@ export const Bugs = () => {
           </select>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <label style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <label style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             Caso de Teste:
           </label>
           <select
@@ -318,7 +318,7 @@ export const Bugs = () => {
           </select>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <label style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <label style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             Severidade:
           </label>
           <select
@@ -343,7 +343,7 @@ export const Bugs = () => {
           </select>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <label style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <label style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             Status:
           </label>
           <select
@@ -368,7 +368,7 @@ export const Bugs = () => {
           </select>
         </div>
         {!loading && bugs.length > 0 && (
-          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <span style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             {bugs.length} bug{bugs.length !== 1 ? 's' : ''}
           </span>
         )}
@@ -392,9 +392,9 @@ export const Bugs = () => {
       {loadError && (
         <div
           style={{
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#b91c1c',
+            backgroundColor: 'var(--color-danger-bg)',
+            border: '1px solid var(--color-danger-border)',
+            color: 'var(--color-danger-text)',
             padding: '0.75rem',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',
@@ -477,9 +477,9 @@ export const Bugs = () => {
             position: 'fixed',
             top: '1rem',
             right: '1rem',
-            backgroundColor: '#ecfdf5',
-            border: '1px solid #bbf7d0',
-            color: '#065f46',
+            backgroundColor: 'var(--color-success-bg)',
+            border: '1px solid var(--color-success-border)',
+            color: 'var(--color-success-text)',
             padding: '0.75rem',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',

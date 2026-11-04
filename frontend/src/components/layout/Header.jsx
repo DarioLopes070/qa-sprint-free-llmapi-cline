@@ -31,8 +31,8 @@ export const Header = ({ onMenuToggle, isSidebarOpen, isMobile }) => {
         left: isSidebarOpen && !isMobile ? 'calc(260px + 1rem)' : '1rem',
         right: '1rem',
         height: '64px',
-        background: '#ffffff',
-        borderBottom: '1px solid #e5e7eb',
+        background: 'var(--color-surface)',
+        borderBottom: '1px solid var(--color-border)',
         display: 'flex',
         alignItems: 'center',
         zIndex: 50,
@@ -54,10 +54,10 @@ export const Header = ({ onMenuToggle, isSidebarOpen, isMobile }) => {
           aria-label="Abrir menu de navegação"
           style={{
             padding: '0.5rem',
-            color: '#374151',
-            border: '1px solid #e5e7eb',
+            color: 'var(--color-text-secondary)',
+            border: '1px solid var(--color-border)',
             borderRadius: '0.375rem',
-            background: '#ffffff',
+            background: 'var(--color-surface)',
             justifySelf: 'flex-start',
           }}
         >
@@ -69,7 +69,7 @@ export const Header = ({ onMenuToggle, isSidebarOpen, isMobile }) => {
             style={{
               fontSize: '1.125rem',
               fontWeight: 600,
-              color: '#111827',
+              color: 'var(--color-text)',
               marginBottom: '0.125rem',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -82,7 +82,7 @@ export const Header = ({ onMenuToggle, isSidebarOpen, isMobile }) => {
           <p
             style={{
               fontSize: '0.75rem',
-              color: '#6b7280',
+              color: 'var(--color-text-secondary)',
               margin: 0,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -107,8 +107,8 @@ export const Header = ({ onMenuToggle, isSidebarOpen, isMobile }) => {
               fontSize: '0.75rem',
               fontWeight: 500,
               padding: '0.2rem 0.6rem',
-              background: '#eff6ff',
-              color: '#2563eb',
+              background: 'var(--color-primary-light)',
+              color: 'var(--color-primary)',
               borderRadius: '9999px',
             }}
           >

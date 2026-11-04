@@ -125,7 +125,7 @@ def test_test_executions_scenario(client):
         tc1_id = tc1.id
         tc2_id = tc2.id
 
-    statuses = ['Passed', 'Failed', 'Blocked', 'Not Run']
+    statuses = ['Passed', 'Failed', 'Blocked']
     for i, status in enumerate(statuses):
         tc_id = tc1_id if i < 2 else tc2_id
         response = client.post('/api/executions/', json={
@@ -147,7 +147,7 @@ def test_test_executions_scenario(client):
     response = client.get(f'/api/executions/?test_case_id={tc2_id}')
     assert response.status_code == 200
     execs_tc2 = response.get_json()
-    assert len(execs_tc2) == 2
+    assert len(execs_tc2) == 1
     for e in execs_tc2:
         assert e['test_case_id'] == tc2_id
 
@@ -156,7 +156,6 @@ def test_test_executions_scenario(client):
     assert 'Passed' in statuses_tc1
     assert 'Failed' in statuses_tc1
     assert 'Blocked' in statuses_tc2
-    assert 'Not Run' in statuses_tc2
 
 
 # ============================================================
@@ -334,3 +333,67 @@ def test_integrity_after_failures(client):
     assert data['title'] == 'Updated Bug Title'
     assert data['status'] == 'Resolved'
     assert data['resolved_at'] is not None
+
+
+# ============================================================
+# Cenario 6 — Isolamento de dados entre projetos
+# ============================================================
+def test_project_data_isolation(client):
+    """Teste: dados de um projeto nao devem aparecer no contexto de outro."""
+    with client.application.app_context():
+        project_a = Project(name='Isolation Project A')
+        project_b = Project(name='Isolation Project B')
+        db.session.add_all([project_a, project_b])
+        db.session.commit()
+        id_a = project_a.id
+        id_b = project_b.id
+
+        tc_a = _TestCase(project_id=id_a, title='TC Isolamento A')
+        tc_b = _TestCase(project_id=id_b, title='TC Isolamento B')
+        db.session.add_all([tc_a, tc_b])
+        db.session.commit()
+        id_tc_a = tc_a.id
+        id_tc_b = tc_b.id
+
+        exec_a = _TestExecution(test_case_id=id_tc_a, status='Passed')
+        exec_b = _TestExecution(test_case_id=id_tc_b, status='Failed')
+        db.session.add_all([exec_a, exec_b])
+        db.session.commit()
+
+        bug_a = Bug(project_id=id_a, title='Bug Isolamento A', severity='High')
+        bug_b = Bug(project_id=id_b, title='Bug Isolamento B', severity='Critical')
+        db.session.add_all([bug_a, bug_b])
+        db.session.commit()
+
+    # Casos de teste isolados por projeto
+    resp_a = client.get(f'/api/testcases/?project_id={id_a}')
+    assert resp_a.status_code == 200
+    assert len(resp_a.get_json()) == 1
+    assert resp_a.get_json()[0]['title'] == 'TC Isolamento A'
+
+    resp_b = client.get(f'/api/testcases/?project_id={id_b}')
+    assert resp_b.status_code == 200
+    assert len(resp_b.get_json()) == 1
+    assert resp_b.get_json()[0]['title'] == 'TC Isolamento B'
+
+    # Execucoes isoladas por projeto
+    resp_a = client.get(f'/api/executions/?project_id={id_a}')
+    assert resp_a.status_code == 200
+    assert len(resp_a.get_json()) == 1
+    assert resp_a.get_json()[0]['status'] == 'Passed'
+
+    resp_b = client.get(f'/api/executions/?project_id={id_b}')
+    assert resp_b.status_code == 200
+    assert len(resp_b.get_json()) == 1
+    assert resp_b.get_json()[0]['status'] == 'Failed'
+
+    # Bugs isolados por projeto
+    resp_a = client.get(f'/api/bugs/?project_id={id_a}')
+    assert resp_a.status_code == 200
+    assert len(resp_a.get_json()) == 1
+    assert resp_a.get_json()[0]['title'] == 'Bug Isolamento A'
+
+    resp_b = client.get(f'/api/bugs/?project_id={id_b}')
+    assert resp_b.status_code == 200
+    assert len(resp_b.get_json()) == 1
+    assert resp_b.get_json()[0]['title'] == 'Bug Isolamento B'

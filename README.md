@@ -197,3 +197,5 @@ npm run preview
 * Não versionar arquivos `.env` ou credenciais. A leitura de segredos deve ser feita exclusivamente por variáveis de ambiente.
 * Os rótulos da interface são exibidos em português; os valores técnicos (status e severidades) são preservados em inglês no banco e na API.
 * Este projeto não utiliza bibliotecas de gráficos externos; os indicadores do Dashboard são renderizados com o componente `StatCard` existente.
+* **Novo endpoint de teste:** `GET /health` retorna HTTP 200 e JSON `{"status": "ok"}`.
+* **Testes automatizados:** executar `python -m pytest` na raiz do projeto. O teste `test_health.py` valida tanto o código HTTP quanto o conteúdo JSON do endpoint.

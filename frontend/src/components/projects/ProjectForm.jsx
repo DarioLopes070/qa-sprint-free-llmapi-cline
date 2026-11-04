@@ -90,7 +90,7 @@ export const ProjectForm = ({ project, onSave, onCancel, saving, error }) => {
         style={{
           fontSize: '1.25rem',
           fontWeight: 700,
-          color: '#111827',
+          color: 'var(--color-text)',
           margin: 0,
         }}
       >
@@ -103,10 +103,10 @@ export const ProjectForm = ({ project, onSave, onCancel, saving, error }) => {
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
-          Nome do projeto <span style={{ color: '#dc2626' }}>*</span>
+          Nome do projeto <span style={{ color: 'var(--color-danger)' }}>*</span>
         </label>
         <input
           id="project-name"
@@ -119,7 +119,7 @@ export const ProjectForm = ({ project, onSave, onCancel, saving, error }) => {
           disabled={saving}
           className="input"
           style={{
-            borderColor: fieldErrors.name ? '#dc2626' : undefined,
+            borderColor: fieldErrors.name ? 'var(--color-danger)' : undefined,
           }}
         />
         {fieldErrors.name && (
@@ -128,7 +128,7 @@ export const ProjectForm = ({ project, onSave, onCancel, saving, error }) => {
             aria-live="polite"
             style={{
               fontSize: '0.75rem',
-              color: '#dc2626',
+              color: 'var(--color-danger)',
               marginTop: '0.125rem',
             }}
           >
@@ -143,7 +143,7 @@ export const ProjectForm = ({ project, onSave, onCancel, saving, error }) => {
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Descrição
@@ -168,9 +168,9 @@ export const ProjectForm = ({ project, onSave, onCancel, saving, error }) => {
           role="alert"
           aria-live="assertive"
           style={{
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#b91c1c',
+            backgroundColor: 'var(--color-danger-bg)',
+            border: '1px solid var(--color-danger-border)',
+            color: 'var(--color-danger-text)',
             padding: '0.75rem',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',

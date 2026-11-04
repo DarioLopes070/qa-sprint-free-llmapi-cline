@@ -1,6 +1,9 @@
+from datetime import datetime
+
 import pytest
 from app.models import Project
 from app.models import TestCase as _TestCase
+from app.models import TestExecution as _TestExecution
 from app.extensions import db
 
 
@@ -327,4 +330,124 @@ def test_delete_test_case_not_found(client):
     assert response.status_code == 404
     data = response.get_json()
     assert 'error' in data
+
+
+def _make_case_with_executions(client, executions):
+    """Cria projeto, caso e execuções (com executed_at controlado) via modelo."""
+    with client.application.app_context():
+        project = Project(name='Project for Last Result')
+        db.session.add(project)
+        db.session.commit()
+        project_id = project.id
+
+        tc = _TestCase(project_id=project_id, title='TC Last Result')
+        db.session.add(tc)
+        db.session.commit()
+        tc_id = tc.id
+
+        for status, executed_at in executions:
+            db.session.add(
+                _TestExecution(
+                    test_case_id=tc_id,
+                    status=status,
+                    executed_at=executed_at,
+                )
+            )
+        db.session.commit()
+    return tc_id
+
+
+def test_last_result_different_dates_date_wins_over_id(client):
+    """Teste: maior ID com data mais antiga nao vence a data mais recente."""
+    tc_id = _make_case_with_executions(
+        client,
+        [
+            ('Passed', datetime(2026, 3, 1, 10, 0, 0)),   # id 1, data mais recente
+            ('Failed', datetime(2026, 1, 1, 10, 0, 0)),   # id 2, data mais antiga
+        ],
+    )
+
+    response = client.get('/api/testcases/')
+    assert response.status_code == 200
+    data = response.get_json()
+    case = next((c for c in data if c['id'] == tc_id), None)
+    assert case is not None
+    assert case['last_execution'] is not None
+    assert case['last_execution']['status'] == 'Passed'
+
+
+def test_last_result_date_tie_higher_id_wins(client):
+    """Teste: em empate de data/hora, vence o maior ID."""
+    executed_at = datetime(2026, 2, 15, 12, 0, 0)
+    tc_id = _make_case_with_executions(
+        client,
+        [
+            ('Passed', executed_at),   # id 1
+            ('Failed', executed_at),   # id 2 (vence pelo ID)
+        ],
+    )
+
+    response = client.get('/api/testcases/')
+    assert response.status_code == 200
+    data = response.get_json()
+    case = next((c for c in data if c['id'] == tc_id), None)
+    assert case is not None
+    assert case['last_execution'] is not None
+    assert case['last_execution']['status'] == 'Failed'
+
+
+def test_last_result_case_without_history(client):
+    """Teste: caso sem execucao retorna last_execution nulo sem criar registros."""
+    with client.application.app_context():
+        project = Project(name='Project for No History')
+        db.session.add(project)
+        db.session.commit()
+        project_id = project.id
+
+        tc = _TestCase(project_id=project_id, title='TC No History')
+        db.session.add(tc)
+        db.session.commit()
+        tc_id = tc.id
+
+    response = client.get('/api/testcases/')
+    assert response.status_code == 200
+    data = response.get_json()
+    case = next((c for c in data if c['id'] == tc_id), None)
+    assert case is not None
+    assert case['last_execution'] is None
+
+    # Nenhuma execucao foi criada para o caso
+    response = client.get(f'/api/executions/?test_case_id={tc_id}')
+    assert response.status_code == 200
+    assert response.get_json() == []
+
+
+def test_last_result_legacy_not_run_coexistence(client):
+    """Teste: 'Not Run' legado mais recente nao esconde resultado valido anterior.
+
+    O caso deve exibir o resultado valido anterior; o registro legado e
+    preservado no historico com seu rotulo.
+    """
+    tc_id = _make_case_with_executions(
+        client,
+        [
+            ('Passed', datetime(2026, 1, 1, 10, 0, 0)),   # id 1, valido, anterior
+            ('Not Run', datetime(2026, 3, 1, 10, 0, 0)),  # id 2, legado, mais recente
+        ],
+    )
+
+    response = client.get('/api/testcases/')
+    assert response.status_code == 200
+    data = response.get_json()
+    case = next((c for c in data if c['id'] == tc_id), None)
+    assert case is not None
+    assert case['last_execution'] is not None
+    assert case['last_execution']['status'] == 'Passed'
+
+    # O registro legado continua visível no histórico
+    response = client.get(f'/api/executions/?test_case_id={tc_id}')
+    assert response.status_code == 200
+    statuses = [e['status'] for e in response.get_json()]
+    assert 'Not Run' in statuses
+    assert 'Passed' in statuses
 

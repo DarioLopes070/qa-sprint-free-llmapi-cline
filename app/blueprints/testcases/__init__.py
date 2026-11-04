@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app import serialize_datetime
 from app.extensions import db
-from app.models import TestCase, Project
+from app.models import TestCase, Project, TestExecution
 
 bp = Blueprint('testcases', __name__, url_prefix='/api/testcases')
 
@@ -10,6 +10,37 @@ ALLOWED_FIELDS = {
     'project_id', 'title', 'description', 'steps',
     'expected_result', 'priority',
 }
+
+
+# Statuses considerados resultados válidos de execução. 'Not Run' é um
+# rótulo legado que nunca deve ser tratado como último resultado válido.
+VALID_EXECUTION_STATUSES = ('Passed', 'Failed', 'Blocked')
+
+
+def _last_valid_execution(tc):
+    """Retorna a execução mais recente com resultado válido do caso.
+
+    A ordenação prioriza executed_at (mais recente primeiro) e, em caso de
+    empate de data/hora, o maior ID vence. Não depende da ordem em que o
+    banco devolve os registros.
+    """
+    return (
+        TestExecution.query
+        .filter_by(test_case_id=tc.id)
+        .filter(TestExecution.status.in_(VALID_EXECUTION_STATUSES))
+        .order_by(TestExecution.executed_at.desc(), TestExecution.id.desc())
+        .first()
+    )
+
+
+def _serialize_last_execution(execution):
+    if execution is None:
+        return None
+    return {
+        'id': execution.id,
+        'status': execution.status,
+        'executed_at': serialize_datetime(execution.executed_at),
+    }
 
 
 def _serialize_test_case(tc):
@@ -22,6 +53,7 @@ def _serialize_test_case(tc):
         'expected_result': tc.expected_result,
         'priority': tc.priority,
         'created_at': serialize_datetime(tc.created_at),
+        'last_execution': _serialize_last_execution(_last_valid_execution(tc)),
     }
 
 

@@ -22,8 +22,8 @@ export const Sidebar = ({ isOpen, onToggle }) => {
         left: 0,
         bottom: 0,
         width: 'min(260px, 80vw)',
-        background: '#ffffff',
-        borderRight: '1px solid #e5e7eb',
+        background: 'var(--color-surface)',
+        borderRight: '1px solid var(--color-border)',
         display: 'flex',
         flexDirection: 'column',
         transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
@@ -35,14 +35,14 @@ export const Sidebar = ({ isOpen, onToggle }) => {
       <div
         style={{
           padding: '1.25rem 1.5rem',
-          borderBottom: '1px solid #e5e7eb',
+          borderBottom: '1px solid var(--color-border)',
         }}
       >
         <span
           style={{
             fontSize: '1.25rem',
             fontWeight: 800,
-            color: '#111827',
+            color: 'var(--color-text)',
             letterSpacing: '-0.025em',
           }}
         >
@@ -67,11 +67,11 @@ export const Sidebar = ({ isOpen, onToggle }) => {
                     alignItems: 'center',
                     gap: '0.75rem',
                     padding: '0.75rem 1.5rem',
-                    color: isActive ? '#2563eb' : '#374151',
+                    color: isActive ? 'var(--color-primary)' : 'var(--color-text-secondary)',
                     fontWeight: 500,
                     fontSize: '0.875rem',
-                    background: isActive ? '#eff6ff' : 'transparent',
-                    borderRight: isActive ? '3px solid #2563eb' : 'none',
+                    background: isActive ? 'var(--color-primary-light)' : 'transparent',
+                    borderRight: isActive ? '3px solid var(--color-primary)' : 'none',
                     transition: 'all 0.2s ease',
                     textDecoration: 'none',
                     width: '100',
@@ -87,8 +87,8 @@ export const Sidebar = ({ isOpen, onToggle }) => {
         </ul>
       </nav>
 
-      <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid #e5e7eb' }}>
-        <p style={{ fontSize: '0.75rem', color: '#9ca3af', margin: 0 }}>
+      <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--color-border)' }}>
+        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', margin: 0 }}>
           Versão 1.0.0
         </p>
       </div>

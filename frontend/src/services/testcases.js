@@ -21,7 +21,7 @@ const TEST_CASES_PATH = '/testcases';
  * Lista todos os casos de teste cadastrados.
  *
  * @param {number|string} [projectId] - Se informado, filtra casos pelo projeto.
- * @returns {Promise<Array>} Array de objetos de caso de teste com campos id, project_id, title, description, steps, expected_result, priority, created_at.
+ * @returns {Promise<Array>} Array de objetos de caso de teste com campos id, project_id, title, description, steps, expected_result, priority, created_at e last_execution (resultado da execucao mais recente valida ou null).
  * @throws {ApiError} Se a requisição falhar.
  */
 export async function listTestCases(projectId) {

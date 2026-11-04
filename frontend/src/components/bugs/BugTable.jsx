@@ -26,15 +26,15 @@ const SEVERITY_BADGE_STYLE = (severity) => {
 
   switch (severity) {
     case 'Low':
-      return { ...base, backgroundColor: '#ecfdf5', color: '#059669' };
+      return { ...base, backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' };
     case 'Medium':
-      return { ...base, backgroundColor: '#fefce8', color: '#854d0e' };
+      return { ...base, backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' };
     case 'High':
-      return { ...base, backgroundColor: '#fef2f2', color: '#b91c1c' };
+      return { ...base, backgroundColor: 'var(--color-danger-border)', color: 'var(--color-danger-text)' };
     case 'Critical':
-      return { ...base, backgroundColor: '#7f1d1d', color: '#ffffff' };
+      return { ...base, backgroundColor: 'var(--color-danger-bg)', color: 'var(--color-text)' };
     default:
-      return { ...base, backgroundColor: '#f3f4f6', color: '#6b7280' };
+      return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
   }
 };
 
@@ -49,15 +49,15 @@ const STATUS_BADGE_STYLE = (status) => {
 
   switch (status) {
     case 'Open':
-      return { ...base, backgroundColor: '#dbeafe', color: '#1d4ed8' };
+      return { ...base, backgroundColor: 'var(--color-primary-light)', color: 'var(--color-text)' };
     case 'In Progress':
-      return { ...base, backgroundColor: '#fef3c7', color: '#92400e' };
+      return { ...base, backgroundColor: 'var(--color-warning-bg)', color: 'var(--color-warning-text)' };
     case 'Resolved':
-      return { ...base, backgroundColor: '#d1fae5', color: '#065f46' };
+      return { ...base, backgroundColor: 'var(--color-success-bg)', color: 'var(--color-success-text)' };
     case 'Closed':
-      return { ...base, backgroundColor: '#e5e7eb', color: '#374151' };
+      return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
     default:
-      return { ...base, backgroundColor: '#f3f4f6', color: '#6b7280' };
+      return { ...base, backgroundColor: 'var(--color-surface-hover)', color: 'var(--color-text-secondary)' };
   }
 };
 
@@ -93,17 +93,17 @@ export const BugTable = ({ bugs, projects, testCases, onEdit, onDelete, deleting
 
   const cellStyle = {
     padding: '0.75rem',
-    borderBottom: '1px solid #e5e7eb',
+    borderBottom: '1px solid var(--color-border)',
     fontSize: '0.875rem',
-    color: '#1f2937',
+    color: 'var(--color-text)',
     verticalAlign: 'top',
   };
 
   const headerStyle = {
     ...cellStyle,
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'var(--color-surface-hover)',
     fontWeight: 600,
-    color: '#374151',
+    color: 'var(--color-text)',
     textAlign: 'left',
   };
 
@@ -130,7 +130,7 @@ export const BugTable = ({ bugs, projects, testCases, onEdit, onDelete, deleting
         </thead>
         <tbody>
           {sorted.map((bug) => (
-            <tr key={bug.id} style={{ backgroundColor: '#ffffff' }}>
+            <tr key={bug.id} style={{ backgroundColor: 'var(--color-surface)' }}>
               <td style={cellStyle}>{bug.id}</td>
               <td style={cellStyle}>{projectMap.get(bug.project_id) || `Projeto #${bug.project_id}`}</td>
               <td style={cellStyle}>{bug.test_case_id ? (testCaseMap.get(bug.test_case_id) || `Caso #${bug.test_case_id}`) : '—'}</td>
@@ -164,8 +164,8 @@ export const BugTable = ({ bugs, projects, testCases, onEdit, onDelete, deleting
                       className="btn btn-outline"
                       aria-label={`Excluir bug #${bug.id}`}
                       style={{
-                        borderColor: '#b91c1c',
-                        color: '#b91c1c',
+                        borderColor: 'var(--color-danger)',
+                        color: 'var(--color-danger)',
                         opacity: deleting ? 0.6 : 1,
                       }}
                     >

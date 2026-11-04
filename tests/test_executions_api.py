@@ -51,11 +51,11 @@ def test_create_execution_minimal_fields(client):
 
     response = client.post('/api/executions/', json={
         'test_case_id': tc_id,
-        'status': 'Not Run',
+        'status': 'Passed',
     })
     assert response.status_code == 201
     data = response.get_json()
-    assert data['status'] == 'Not Run'
+    assert data['status'] == 'Passed'
     assert data['executed_by'] is None
     assert data['actual_result'] is None
     assert data['notes'] is None
@@ -74,7 +74,7 @@ def test_create_execution_all_valid_statuses(client):
         db.session.commit()
         tc_id = tc.id
 
-    for status in ['Passed', 'Failed', 'Blocked', 'Not Run']:
+    for status in ['Passed', 'Failed', 'Blocked']:
         response = client.post('/api/executions/', json={
             'test_case_id': tc_id,
             'status': status,
@@ -486,3 +486,134 @@ def test_execution_persist_actual_result_and_notes(client):
     data = response.get_json()
     assert data['actual_result'] == 'Error on line 42'
     assert data['notes'] == 'Needs investigation'
+
+
+def test_list_executions_filtered_by_project_id(client):
+    """Teste: listar execucoes filtradas por project_id isola dados entre projetos."""
+    with client.application.app_context():
+        project_a = Project(name='Project Isolation A')
+        project_b = Project(name='Project Isolation B')
+        db.session.add_all([project_a, project_b])
+        db.session.commit()
+        id_a = project_a.id
+        id_b = project_b.id
+
+        tc_a = _TestCase(project_id=id_a, title='TC Projeto A')
+        tc_b = _TestCase(project_id=id_b, title='TC Projeto B')
+        db.session.add_all([tc_a, tc_b])
+        db.session.commit()
+        id_tc_a = tc_a.id
+        id_tc_b = tc_b.id
+
+        exec_a = _TestExecution(test_case_id=id_tc_a, status='Passed')
+        exec_b = _TestExecution(test_case_id=id_tc_b, status='Failed')
+        db.session.add_all([exec_a, exec_b])
+        db.session.commit()
+
+    # Filtrar por project_id = A: so deve retornar a execucao de A
+    response = client.get(f'/api/executions/?project_id={id_a}')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert len(data) == 1
+    assert data[0]['test_case_id'] == id_tc_a
+    assert data[0]['status'] == 'Passed'
+
+    # Filtrar por project_id = B: so deve retornar a execucao de B
+    response = client.get(f'/api/executions/?project_id={id_b}')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert len(data) == 1
+    assert data[0]['test_case_id'] == id_tc_b
+    assert data[0]['status'] == 'Failed'
+
+    # Sem filtro: retorna todas
+    response = client.get('/api/executions/')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert len(data) == 2
+
+
+def test_create_execution_not_run_returns_400(client):
+    """Teste: POST com caso valido e status 'Not Run' retorna 400 e nao cria registro."""
+    with client.application.app_context():
+        project = Project(name='Project for Not Run Create')
+        db.session.add(project)
+        db.session.commit()
+        project_id = project.id
+
+        tc = _TestCase(project_id=project_id, title='TC Not Run Create')
+        db.session.add(tc)
+        db.session.commit()
+        tc_id = tc.id
+
+    response = client.post('/api/executions/', json={
+        'test_case_id': tc_id,
+        'status': 'Not Run',
+    })
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'error' in data
+
+    # Nenhum registro deve ter sido criado
+    response = client.get('/api/executions/')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert len(data) == 0
+
+
+def test_update_execution_to_not_run_returns_400_preserves_status(client):
+    """Teste: PUT alterando execucao valida para 'Not Run' retorna 400 e preserva o status anterior."""
+    with client.application.app_context():
+        project = Project(name='Project for Not Run Update')
+        db.session.add(project)
+        db.session.commit()
+        project_id = project.id
+
+        tc = _TestCase(project_id=project_id, title='TC Not Run Update')
+        db.session.add(tc)
+        db.session.commit()
+        tc_id = tc.id
+
+        execution = _TestExecution(test_case_id=tc_id, status='Passed')
+        db.session.add(execution)
+        db.session.commit()
+        execution_id = execution.id
+
+    response = client.put(f'/api/executions/{execution_id}', json={
+        'status': 'Not Run',
+    })
+    assert response.status_code == 400
+    data = response.get_json()
+    assert 'error' in data
+
+    # O status anterior deve ter sido preservado
+    response = client.get(f'/api/executions/{execution_id}')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['id'] == execution_id
+    assert data['status'] == 'Passed'
+
+
+def test_get_legacy_not_run_execution_visible(client):
+    """Teste: registro legado 'Not Run' inserido diretamente pelo fixture continua visivel via GET."""
+    with client.application.app_context():
+        project = Project(name='Project for Legacy Not Run')
+        db.session.add(project)
+        db.session.commit()
+        project_id = project.id
+
+        tc = _TestCase(project_id=project_id, title='TC Legacy Not Run')
+        db.session.add(tc)
+        db.session.commit()
+        tc_id = tc.id
+
+        execution = _TestExecution(test_case_id=tc_id, status='Not Run')
+        db.session.add(execution)
+        db.session.commit()
+        execution_id = execution.id
+
+    response = client.get(f'/api/executions/{execution_id}')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data['id'] == execution_id
+    assert data['status'] == 'Not Run'

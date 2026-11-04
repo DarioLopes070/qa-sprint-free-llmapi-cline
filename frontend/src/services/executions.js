@@ -25,11 +25,16 @@ const EXECUTIONS_PATH = '/executions';
  * @returns {Promise<Array>} Array de objetos de execução com campos id, test_case_id, status, executed_at, executed_by, actual_result, notes.
  * @throws {ApiError} Se a requisição falhar.
  */
-export async function listExecutions(testCaseId) {
-  const path = testCaseId !== undefined && testCaseId !== null
-    ? `${EXECUTIONS_PATH}/?test_case_id=${testCaseId}`
-    : `${EXECUTIONS_PATH}/`;
-  return api.get(path);
+export async function listExecutions(params = {}) {
+  const searchParams = new URLSearchParams();
+  if (params.testCaseId !== undefined && params.testCaseId !== null) {
+    searchParams.append('test_case_id', String(params.testCaseId));
+  }
+  if (params.projectId !== undefined && params.projectId !== null) {
+    searchParams.append('project_id', String(params.projectId));
+  }
+  const query = searchParams.toString() ? `?${searchParams.toString()}` : '';
+  return api.get(`${EXECUTIONS_PATH}/${query}`);
 }
 
 /**

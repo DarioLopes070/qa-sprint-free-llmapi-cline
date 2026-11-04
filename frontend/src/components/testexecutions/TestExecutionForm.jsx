@@ -5,7 +5,6 @@ const STATUS_OPTIONS = [
   { label: 'Aprovado', value: 'Passed' },
   { label: 'Reprovado', value: 'Failed' },
   { label: 'Bloqueado', value: 'Blocked' },
-  { label: 'Não executado', value: 'Not Run' },
 ];
 
 export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, saving, error }) => {
@@ -121,7 +120,7 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
         style={{
           fontSize: '1.25rem',
           fontWeight: 700,
-          color: '#111827',
+          color: 'var(--color-text)',
           margin: 0,
         }}
       >
@@ -134,13 +133,13 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
-          Caso de Teste <span style={{ color: '#dc2626' }}>*</span>
+          Caso de Teste <span style={{ color: 'var(--color-danger)' }}>*</span>
         </label>
         {execution ? (
-          <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+          <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
             {selectedTestCase?.title || `Caso #${execution.test_case_id}`}
           </div>
         ) : (
@@ -166,7 +165,7 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
                 aria-live="polite"
                 style={{
                   fontSize: '0.75rem',
-                  color: '#dc2626',
+                  color: 'var(--color-danger)',
                   marginTop: '0.125rem',
                 }}
               >
@@ -183,10 +182,10 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
-          Status <span style={{ color: '#dc2626' }}>*</span>
+          Status <span style={{ color: 'var(--color-danger)' }}>*</span>
         </label>
         <select
           id="execution-status"
@@ -209,7 +208,7 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
             aria-live="polite"
             style={{
               fontSize: '0.75rem',
-              color: '#dc2626',
+              color: 'var(--color-danger)',
               marginTop: '0.125rem',
             }}
           >
@@ -224,7 +223,7 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Executado por
@@ -247,7 +246,7 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Resultado Real
@@ -273,7 +272,7 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
           style={{
             fontSize: '0.875rem',
             fontWeight: 600,
-            color: '#1f2937',
+            color: 'var(--color-text)',
           }}
         >
           Notas
@@ -300,7 +299,7 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
             style={{
               fontSize: '0.875rem',
               fontWeight: 600,
-              color: '#1f2937',
+              color: 'var(--color-text)',
             }}
           >
             Data da Execução
@@ -309,8 +308,8 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
             id="execution-executed-at"
             style={{
               fontSize: '0.875rem',
-              color: '#6b7280',
-              backgroundColor: '#f3f4f6',
+              color: 'var(--color-text-secondary)',
+              backgroundColor: 'var(--color-surface-hover)',
               padding: '0.5rem 0.75rem',
               borderRadius: '0.375rem',
             }}
@@ -325,9 +324,9 @@ export const TestExecutionForm = ({ execution, testCases, onSave, onCancel, savi
           role="alert"
           aria-live="assertive"
           style={{
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#b91c1c',
+            backgroundColor: 'var(--color-danger-bg)',
+            border: '1px solid var(--color-danger-border)',
+            color: 'var(--color-danger-text)',
             padding: '0.75rem',
             borderRadius: '0.375rem',
             fontSize: '0.875rem',

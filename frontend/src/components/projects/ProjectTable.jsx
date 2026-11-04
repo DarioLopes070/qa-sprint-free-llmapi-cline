@@ -40,17 +40,17 @@ export const ProjectTable = ({ projects, onEdit, onDelete }) => {
 
   const cellStyle = {
     padding: '0.75rem',
-    borderBottom: '1px solid #e5e7eb',
+    borderBottom: '1px solid var(--color-border)',
     fontSize: '0.875rem',
-    color: '#1f2937',
+    color: 'var(--color-text)',
     verticalAlign: 'top',
   };
 
   const headerStyle = {
     ...cellStyle,
-    backgroundColor: '#f9fafb',
+    backgroundColor: 'var(--color-surface-hover)',
     fontWeight: 600,
-    color: '#374151',
+    color: 'var(--color-text)',
     textAlign: 'left',
   };
 
@@ -92,7 +92,7 @@ export const ProjectTable = ({ projects, onEdit, onDelete }) => {
         </thead>
         <tbody>
           {projects.map((project) => (
-            <tr key={project.id} style={{ backgroundColor: '#ffffff' }}>
+            <tr key={project.id} style={{ backgroundColor: 'var(--color-surface)' }}>
               <td style={cellStyle}>{project.id}</td>
               <td style={cellStyle}>{project.name}</td>
               <td style={cellStyle}>
@@ -124,8 +124,8 @@ export const ProjectTable = ({ projects, onEdit, onDelete }) => {
                       style={{
                         padding: '0.375rem 0.75rem',
                         fontSize: '0.875rem',
-                        color: '#dc2626',
-                        borderColor: '#dc2626',
+                        color: 'var(--color-danger)',
+                        borderColor: 'var(--color-danger)',
                       }}
                     >
                       Excluir
